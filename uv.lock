@@ -517,6 +517,19 @@ wheels = [
 ]
 
 [[package]]
+name = "pyworld"
+version = "0.3.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a5/0f/c78d631ffbb4c1aaebf80ff2bf9e791213b381dbe404f9ce1a3eb3672931/pyworld-0.3.5.tar.gz", hash = "sha256:1b93e53cddb67a0e4faa34d6cf919ac6c662feb1c8c0ed901d71b595ab396aa3", size = 261021 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b6/29/9c9c0dad7575faea3dbc3cbc8b69e0365b35912332068afd79a2b93d822d/pyworld-0.3.5-cp312-cp312-win_amd64.whl", hash = "sha256:59b48961c2ac34fb01efeb1a77d3eda69c41b676858cbc3a82dfb7602c0c762b", size = 222700 },
+    { url = "https://files.pythonhosted.org/packages/6f/5c/7e8fb5417ef96cbeca125b5ee507ec5568ce4bde7b576d20db2d2d4a80fc/pyworld-0.3.5-cp313-cp313-win_amd64.whl", hash = "sha256:860c5c3528f1dbc5c68fa71a16e3bb6990244619e5b9baf62952f3a6bfc6131c", size = 222371 },
+]
+
+[[package]]
 name = "requests"
 version = "2.32.3"
 source = { registry = "https://pypi.org/simple" }
@@ -679,6 +692,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "click" },
     { name = "librosa" },
+    { name = "pyworld" },
     { name = "safetensors" },
     { name = "soundfile" },
     { name = "torch" },
@@ -690,6 +704,7 @@ dependencies = [
 requires-dist = [
     { name = "click", specifier = ">=8.1.8" },
     { name = "librosa", specifier = ">=0.10.2.post1" },
+    { name = "pyworld", specifier = ">=0.3.5" },
     { name = "safetensors", specifier = ">=0.5.2" },
     { name = "soundfile", specifier = ">=0.13.1" },
     { name = "torch", specifier = "<2.6" },

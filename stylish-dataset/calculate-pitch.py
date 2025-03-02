@@ -7,6 +7,7 @@ import soundfile
 import torch
 import torchaudio
 import torchcrepe
+import pyworld
 
 from safetensors.torch import save_file
 
@@ -48,29 +49,43 @@ def calculate_pitch(path, wavdir):
             wave = numpy.concatenate(
                 [numpy.zeros([pad_start]), wave, numpy.zeros([pad_end])], axis=0
             )
-            wave = librosa.resample(wave, orig_sr=sr, target_sr=16000)
 
-            with torch.no_grad():
-                wave = torch.from_numpy(wave).float().unsqueeze(0)
-                fmin = 50
-                fmax = 550
-                model = "full"
-                pitch, periodicity = torchcrepe.predict(
-                    wave,
-                    16000,
-                    200,
-                    fmin,
-                    fmax,
-                    model,
-                    batch_size=8192,
-                    device=device,
-                    return_periodicity=True,
-                )
-                periodicity = torchcrepe.threshold.Silence(-60.0)(
-                    periodicity, wave, 16000, 200
-                )
-                pitch = torchcrepe.threshold.At(0.21)(pitch, periodicity)
-                pitch = pitch[:, :-1]
+            bad_f0 = 5
+            zero_value = -10
+            frame_period = 300 / 24000 * 1000
+            f0, t = pyworld.harvest(wave, 24000, frame_period=frame_period)
+            # if harvest fails, try dio
+            if sum(f0 != 0) < bad_f0:
+                sys.stderr.write("D")
+                f0, t = pyworld.dio(wave, 24000, frame_period=frame_period)
+            pitch = pyworld.stonemask(wave, f0, t, 24000)
+            pitch = torch.from_numpy(pitch).float().unsqueeze(0)
+            if torch.any(torch.isnan(pitch)):
+                pitch[torch.isnan(pitch)] = self.zero_value
+
+            # wave = librosa.resample(wave, orig_sr=sr, target_sr=16000)
+            #
+            # with torch.no_grad():
+            #    wave = torch.from_numpy(wave).float().unsqueeze(0)
+            #    fmin = 0
+            #    fmax = 8000
+            #    model = "full"
+            #    pitch, periodicity = torchcrepe.predict(
+            #        wave,
+            #        16000,
+            #        200,
+            #        fmin,
+            #        fmax,
+            #        model,
+            #        batch_size=8192,
+            #        device=device,
+            #        return_periodicity=True,
+            #    )
+            #    periodicity = torchcrepe.threshold.Silence(-60.0)(
+            #        periodicity, wave, 16000, 200
+            #    )
+            #    pitch = torchcrepe.threshold.At(0.21)(pitch, periodicity)
+            pitch = pitch[:, :-1]
             result[name] = pitch
             count += 1
             sys.stderr.write(".")
