@@ -13,7 +13,7 @@ class RMVPE:
         self.resample_kernel = {}
         model = E2E0(4, 1, (2, 2))
         ckpt = torch.load(model_path)
-        model.load_state_dict(ckpt["model"])
+        model.load_state_dict(ckpt)
         model.eval()
         self.model = model
         self.mel_extractor = MelSpectrogram(
