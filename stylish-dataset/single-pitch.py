@@ -81,7 +81,7 @@ def calculate_pitch_pyworld(path, wavdir, process_id):
 
         result[name] = pitch
         print(".", end=" ")
-        if count % 50 == 0:
+        if count % 100 == 0:
             print(f"P{process_id} {count}/{len(lines)}")
     return result
 
@@ -138,7 +138,7 @@ def calculate_pitch_rmvpe(path, wavdir, checkpoint, process_id):
         result[name] = pitch
 
         print(".", end=" ")
-        if count % 50 == 0:
+        if count % 100 == 0:
             print(f"P{process_id} {count}/{len(lines)}")
     return result
 
