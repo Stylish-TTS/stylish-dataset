@@ -42,10 +42,14 @@ def main(method, wavdir, trainpath, valpath, outpath, split, rmvpe_checkpoint=No
                     f"tmp-{i}.txt",
                     "--outpath",
                     f"tmp-{i}.safetensors",
+                    "--process_id",
+                    str(i),
                 ]
-                + ["--rmvpe_checkpoint", rmvpe_checkpoint]
-                if method == "rmvpe"
-                else []
+                + (
+                    ["--rmvpe_checkpoint", rmvpe_checkpoint]
+                    if method == "rmvpe"
+                    else []
+                )
             )
         )
         begin += hop
@@ -65,10 +69,10 @@ def main(method, wavdir, trainpath, valpath, outpath, split, rmvpe_checkpoint=No
                 f"tmp-{split-1}.txt",
                 "--outpath",
                 f"tmp-{split-1}.safetensors",
+                "--process_id",
+                str(split - 1),
             ]
-            + ["--rmvpe_checkpoint", rmvpe_checkpoint]
-            if method == "rmvpe"
-            else []
+            + (["--rmvpe_checkpoint", rmvpe_checkpoint] if method == "rmvpe" else [])
         )
     )
     for child in children:
